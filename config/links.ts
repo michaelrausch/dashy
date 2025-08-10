@@ -7,7 +7,8 @@ export const availableLinks: LinkCard[] = [
     url: "https://www.google.com",
     icon: "🔍",
     color: "from-blue-500 to-blue-600",
-    gradient: "bg-gradient-to-br from-blue-500 to-blue-600"
+    gradient: "bg-gradient-to-br from-blue-500 to-blue-600",
+    displayByDefault: true
   },
   {
     id: "github",
@@ -15,7 +16,8 @@ export const availableLinks: LinkCard[] = [
     url: "https://github.com",
     icon: "🐙",
     color: "from-gray-700 to-gray-800",
-    gradient: "bg-gradient-to-br from-gray-700 to-gray-800"
+    gradient: "bg-gradient-to-br from-gray-700 to-gray-800",
+    displayByDefault: false
   },
   {
     id: "chatgpt",
@@ -23,7 +25,8 @@ export const availableLinks: LinkCard[] = [
     url: "https://chat.com",
     icon: "🤖",
     color: "from-emerald-500 to-emerald-600",
-    gradient: "bg-gradient-to-br from-emerald-500 to-emerald-600"
+    gradient: "bg-gradient-to-br from-emerald-500 to-emerald-600",
+    displayByDefault: true
   },
   {
     id: "youtube",
@@ -31,7 +34,26 @@ export const availableLinks: LinkCard[] = [
     url: "https://www.youtube.com",
     icon: "📺",
     color: "from-red-500 to-red-600",
-    gradient: "bg-gradient-to-br from-red-500 to-red-600"
+    gradient: "bg-gradient-to-br from-red-500 to-red-600",
+    displayByDefault: true
+  },
+  {
+    id: "spotify",
+    title: "Spotify",
+    url: "https://www.spotify.com",
+    icon: "🎧",
+    color: "from-green-500 to-green-600",
+    gradient: "bg-gradient-to-br from-green-500 to-green-600",
+    displayByDefault: true
+  },
+  {
+    id: "applemusic",
+    title: "Apple Music",
+    url: "https://music.apple.com/us/new",
+    icon: "🎧",
+    color: "from-purple-500 to-purple-600",
+    gradient: "bg-gradient-to-br from-purple-500 to-purple-600",
+    displayByDefault: false
   },
   {
     id: "outlook",
@@ -39,7 +61,8 @@ export const availableLinks: LinkCard[] = [
     url: "https://outlook.live.com",
     icon: "📧",
     color: "from-blue-500 to-blue-600",
-    gradient: "bg-gradient-to-br from-blue-500 to-blue-600"
+    gradient: "bg-gradient-to-br from-blue-500 to-blue-600",
+    displayByDefault: false
   }
 ];
 

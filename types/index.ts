@@ -6,6 +6,7 @@ export interface LinkCard {
   color: string;
   gradient: string;
   type?: 'emails' | 'custom' | 'training' | string;
+  displayByDefault?: boolean;
 }
 
 export interface EmailAddress {

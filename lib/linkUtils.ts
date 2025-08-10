@@ -96,7 +96,7 @@ export const getFilteredLinks = (
 
   if (!hasSetPreferences) {
     // If no preferences have been set, show all available links
-    filteredLinks = [...availableLinks];
+    filteredLinks = [...availableLinks].filter(link => link.displayByDefault);
   } else {
     // If preferences have been set, only show enabled links
     filteredLinks = availableLinks.filter(link => enabledLinks.includes(link.id));
@@ -138,8 +138,8 @@ export const getFilteredLinks = (
   return filteredLinks;
 };
 
-export const getAllAvailableLinks = (): { availableLinks: LinkCard[] } => {
+export const getAllAvailableLinks = (onlyShowDefaultLinks: boolean = false): { availableLinks: LinkCard[] } => {
   return {
-    availableLinks
+    availableLinks: onlyShowDefaultLinks ? availableLinks.filter(link => link.displayByDefault) : availableLinks
   };
 };
