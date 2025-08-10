@@ -340,3 +340,11 @@ kbd {
   transform: rotate(45deg);
   transform-origin: 0 0;
 }
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.typing-placeholder::placeholder {
+  animation: cursor-blink 1s infinite;
+}
