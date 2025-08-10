@@ -20,8 +20,7 @@ import { PreferencesModal } from '@/components/modals/PreferencesModal';
 import { TimeDebugger } from '@/components/debug/TimeDebugger';
 import { TrainingPlanModal } from "@/components/modals/TrainingPlanModal";
 import { WeatherModal } from "@/components/modals/WeatherModal";
-
-
+console.log('Server time:', new Date().toString());
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -122,7 +121,6 @@ export default function Home() {
     setSearchQuery: () => {}, // SearchBar component manages its own state now
     handleSignOut
   });
-
 
   // Show loading state
   if (status === "loading" || (status === "authenticated" && (preferencesLoading || customLinksLoading || trainingWeekLoading))) {

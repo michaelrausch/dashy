@@ -74,7 +74,8 @@ export const useTimeBasedContent = (session: Session | null, status: string, tim
       return "night-gradient"; // Default gradient for SSR
     }
     
-    const hour = timeOverride !== null && timeOverride !== undefined ? timeOverride : new Date().getHours();
+    let hour = timeOverride !== null && timeOverride !== undefined ? timeOverride : new Date().getHours();
+
     if (hour >= 5 && hour < 8) {
       // Sunrise: 5-8 AM
       return "sunrise-gradient";
