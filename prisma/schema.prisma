@@ -25,6 +25,7 @@ model User {
   preferences UserPreferences?
   customLinks CustomLink[]
   emailAddresses EmailAddress[]
+  trainingDays TrainingDay[]
 
   @@map("users")
 }
@@ -36,11 +37,29 @@ model UserPreferences {
 
   // Store enabled link IDs as JSON array
   enabledLinks String[] @default([])
+  
+  // User's city for weather display
+  city String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("user_preferences")
+}
+
+model TrainingDay {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  dayOfWeek String
+  activity String @default("rest")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, dayOfWeek])
+  @@map("training_day")
 }
 
 model CustomLink {

@@ -11,7 +11,7 @@ export const BackgroundEffects = ({ timeOverride }: BackgroundEffectsProps) => {
     ? timeOverride 
     : new Date().getHours();
   
-  const isNightTime = hour >= 21 || hour < 5;
+  const isNightTime = hour >= 19 || hour < 7;
 
   return (
     <div className="absolute inset-0 overflow-hidden">

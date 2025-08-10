@@ -43,6 +43,7 @@ export async function GET() {
 
     return NextResponse.json({
       enabledLinks: preferences.enabledLinks,
+      city: preferences.city,
       hasSetPreferences
     });
   } catch (error) {
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { enabledLinks } = await request.json();
+    const { enabledLinks, city } = await request.json();
 
     // Get or create user
     let user = await db.user.findUnique({
@@ -82,16 +83,19 @@ export async function POST(request: NextRequest) {
     const preferences = await db.userPreferences.upsert({
       where: { userId: user.id },
       update: {
-        enabledLinks
+        enabledLinks,
+        city
       },
       create: {
         userId: user.id,
-        enabledLinks
+        enabledLinks,
+        city
       }
     });
 
     return NextResponse.json({
       enabledLinks: preferences.enabledLinks,
+      city: preferences.city,
       hasSetPreferences: true
     });
   } catch (error) {

@@ -32,7 +32,8 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
   const [deleteCustomLink] = useDeleteCustomLinkMutation();
   
   const [localPreferences, setLocalPreferences] = useState({
-    enabledLinks: [] as string[]
+    enabledLinks: [] as string[],
+    city: '' as string
   });
   const [availableLinksData, setAvailableLinksData] = useState<{
     availableLinks: LinkCard[];
@@ -43,7 +44,8 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
   useEffect(() => {
     if (isOpen) {
       setLocalPreferences({
-        enabledLinks: [...(preferences.enabledLinks || [])]
+        enabledLinks: [...(preferences.enabledLinks || [])],
+        city: preferences.city || ''
       });
       setAvailableLinksData(getAllAvailableLinks());
     }
@@ -150,6 +152,38 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
         <p className="text-gray-400 mb-8 font-sans font-light">
           Choose which icons appear on your dashboard. Changes will be saved to your account.
         </p>
+
+        {/* City Setting */}
+        <div className="mb-8">
+          <h3 className="text-lg font-serif font-light text-white mb-4">
+            Weather Location
+          </h3>
+          <div className="relative">
+            <select
+              value={localPreferences.city || ''}
+              onChange={(e) => setLocalPreferences(prev => ({ ...prev, city: e.target.value }))}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+            >
+              <option value="" className="bg-gray-900 text-white">
+                Select a city
+              </option>
+              <option value="christchurch" className="bg-gray-900 text-white">
+                🇳🇿 Christchurch
+              </option>
+              <option value="sydney" className="bg-gray-900 text-white">
+                🇦🇺 Sydney
+              </option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <svg className="w-4 h-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+          <p className="text-sm text-gray-400 mt-2">
+            Choose your city to display weather information on your dashboard.
+          </p>
+        </div>
 
         {/* Available Links Section */}
         <div className="mb-8">

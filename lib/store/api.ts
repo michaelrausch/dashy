@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CustomLink, UserPreferencesState, EmailAddress } from '@/types';
+import { CustomLink, EmailAddress, TrainingWeek } from '@/types';
 
 interface CreateCustomLinkData {
   title: string;
@@ -15,11 +15,13 @@ interface UpdateCustomLinkData extends CreateCustomLinkData {
 
 interface PreferencesResponse {
   enabledLinks: string[];
+  city?: string;
   hasSetPreferences: boolean;
 }
 
 interface UpdatePreferencesData {
   enabledLinks: string[];
+  city?: string;
 }
 
 interface CreateEmailData {
@@ -38,7 +40,7 @@ export const api = createApi({
     baseUrl: '/api',
     credentials: 'include',
   }),
-  tagTypes: ['Preferences', 'CustomLink', 'EmailAddress'],
+  tagTypes: ['Preferences', 'CustomLink', 'EmailAddress', 'TrainingWeek'],
   endpoints: (builder) => ({
     // Preferences endpoints
     getPreferences: builder.query<PreferencesResponse, void>({
@@ -135,6 +137,22 @@ export const api = createApi({
         { type: 'EmailAddress', id: 'LIST' },
       ],
     }),
+
+    // Training endpoints
+    getTrainingWeek: builder.query<TrainingWeek, void>({
+      query: () => '/training',
+      providesTags: [{ type: 'TrainingWeek', id: 'LIST' }],
+    }),
+
+    // Update training week
+    updateTrainingWeek: builder.mutation<TrainingWeek, { week: TrainingWeek }>({
+      query: (data) => ({
+        url: '/training',
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: [{ type: 'TrainingWeek', id: 'LIST' }],
+    }),
   }),
 });
 
@@ -149,4 +167,6 @@ export const {
   useCreateEmailAddressMutation,
   useUpdateEmailAddressMutation,
   useDeleteEmailAddressMutation,
+  useGetTrainingWeekQuery,
+  useUpdateTrainingWeekMutation,
 } = api;

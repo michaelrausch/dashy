@@ -2,11 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { LinkCard as LinkCardType } from '@/types';
+import { LinkCard as LinkCardType, TrainingWeek } from '@/types';
 import { inspirationalQuotes } from '@/config/data';
 import { useTimeBasedContent } from '@/hooks/useTimeBasedContent';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { useGetPreferencesQuery, useGetCustomLinksQuery } from '@/lib/store/api';
+import { useGetPreferencesQuery, useGetCustomLinksQuery, useGetTrainingWeekQuery } from '@/lib/store/api';
 import { getFilteredLinks } from '@/lib/linkUtils';
 import { BackgroundEffects } from '@/components/layout/BackgroundEffects';
 import { LoadingScreen } from '@/components/layout/LoadingScreen';
@@ -18,6 +18,8 @@ import { SignOutConfirmationModal } from '@/components/modals/SignOutConfirmatio
 import { EmailsModal } from '@/components/modals/EmailsModal';
 import { PreferencesModal } from '@/components/modals/PreferencesModal';
 import { TimeDebugger } from '@/components/debug/TimeDebugger';
+import { TrainingPlanModal } from "@/components/modals/TrainingPlanModal";
+import { WeatherModal } from "@/components/modals/WeatherModal";
 
 
 
@@ -28,7 +30,10 @@ export default function Home() {
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [timeOverride, setTimeOverride] = useState<number | null>(null);
-
+  const [showTraining, setShowTraining] = useState(false);
+  const [showWeather, setShowWeather] = useState(false);
+  const [weatherData, setWeatherData] = useState<{ weather: any; city: string } | null>(null);
+  
   // Custom hooks
   const { greeting, getGradientClass } = useTimeBasedContent(session, status, timeOverride);
   
@@ -44,6 +49,12 @@ export default function Home() {
     refetch: refetchCustomLinks 
   } = useGetCustomLinksQuery(undefined, { skip: status !== 'authenticated' });
 
+  const { 
+    data: trainingWeek = {}, 
+    isLoading: trainingWeekLoading,
+    refetch: refetchTrainingWeek 
+  } = useGetTrainingWeekQuery(undefined, { skip: status !== 'authenticated' });
+
   // Handler functions
   const handleSearch = (query: string) => {
     const searchUrl = `https://csh-search-api.fly.dev/search?q=${encodeURIComponent(query)}`;
@@ -51,6 +62,11 @@ export default function Home() {
   };
 
   const handleLinkClick = (link: LinkCardType) => {
+    if (link.type === "training" || link.type === "training-week") {
+      setShowTraining(true);
+      return;
+    }
+
     if (link.type === "emails") {
       setShowEmails(true);
     } else {
@@ -72,6 +88,11 @@ export default function Home() {
     setShowSignOutConfirm(true);
   };
 
+  const handleWeatherClick = (weather: any, city: string) => {
+    setWeatherData({ weather, city });
+    setShowWeather(true);
+  };
+
   const copyToClipboard = (email: string) => {
     navigator.clipboard.writeText(email);
   };
@@ -87,9 +108,11 @@ export default function Home() {
       session?.user?.email,
       preferences.enabledLinks,
       preferences.hasSetPreferences,
-      customLinks
+      customLinks,
+      trainingWeek as TrainingWeek,
+      preferences.city
     );
-  }, [session, preferences.enabledLinks, preferences.hasSetPreferences, customLinks]);
+  }, [session, preferences.enabledLinks, preferences.hasSetPreferences, customLinks, trainingWeek, preferences.city]);
 
   // Setup keyboard shortcuts
   useKeyboardShortcuts({
@@ -102,7 +125,7 @@ export default function Home() {
 
 
   // Show loading state
-  if (status === "loading" || (status === "authenticated" && (preferencesLoading || customLinksLoading))) {
+  if (status === "loading" || (status === "authenticated" && (preferencesLoading || customLinksLoading || trainingWeekLoading))) {
     return <LoadingScreen gradientClass={getGradientClass()} timeOverride={timeOverride} />;
   }
 
@@ -129,6 +152,8 @@ export default function Home() {
         <LinksGrid
           links={visibleLinks}
           onLinkClick={handleLinkClick}
+          userCity={preferences.city}
+          onWeatherClick={handleWeatherClick}
         />
 
         <SearchBar onSearch={handleSearch} />
@@ -155,6 +180,20 @@ export default function Home() {
           // RTK Query will automatically invalidate and refetch data
         }}
       />
+
+      <TrainingPlanModal
+        isOpen={showTraining}
+        onClose={() => setShowTraining(false)}
+      />
+
+      {weatherData && (
+        <WeatherModal
+          isOpen={showWeather}
+          onClose={() => setShowWeather(false)}
+          weather={weatherData.weather}
+          city={weatherData.city}
+        />
+      )}
 
       <TimeDebugger
         onTimeOverride={setTimeOverride}

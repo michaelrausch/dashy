@@ -5,7 +5,7 @@ export interface LinkCard {
   icon: string;
   color: string;
   gradient: string;
-  type?: 'emails' | 'custom' | string;
+  type?: 'emails' | 'custom' | 'training' | string;
 }
 
 export interface EmailAddress {
@@ -51,4 +51,44 @@ export interface CustomLink {
   gradient: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export type TrainingActivity = "rest" | "workout" | "run" | "bike" | "swim" | "walk" | "other";
+
+export interface TrainingDay {
+  dayOfWeek: string;
+  activity: TrainingActivity;
+}
+
+export interface TrainingWeek {
+  monday: string;
+  tuesday: string;
+  wednesday: string;
+  thursday: string;
+  friday: string;
+  saturday: string;
+  sunday: string;
+}
+
+export interface WeatherCurrent {
+  temperature: number;
+  condition: string;
+  humidity: number;
+  windSpeed: number;
+  feelsLike: number;
+  uvIndex: number;
+  precipitationIntensity: number;
+}
+
+export interface WeatherForecastDay {
+  day: string;
+  high: number;
+  low: number;
+  condition: string;
+  precipitationChance: number;
+}
+
+export interface WeatherResponse {
+  current: WeatherCurrent;
+  forecast: WeatherForecastDay[];
 }
