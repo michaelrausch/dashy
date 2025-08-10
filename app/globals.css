@@ -341,14 +341,6 @@ kbd {
   transform-origin: 0 0;
 }
 
-@keyframes cursor-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-.typing-placeholder::placeholder {
-  animation: cursor-blink 1s infinite;
-}
-
 /* Additional glass morphism effects */
 .glass-subtle {
   background: rgba(0, 0, 0, 0.2);

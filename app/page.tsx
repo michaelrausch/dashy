@@ -124,7 +124,7 @@ export default function Home() {
 
   // Show loading state
   if (status === "loading" || (status === "authenticated" && (preferencesLoading || customLinksLoading || trainingWeekLoading))) {
-    return <LoadingScreen gradientClass={getGradientClass()} timeOverride={timeOverride} />;
+    return <LoadingScreen gradientClass={getGradientClass()} />;
   }
 
   return (
