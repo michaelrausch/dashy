@@ -16,12 +16,14 @@ interface UpdateCustomLinkData extends CreateCustomLinkData {
 interface PreferencesResponse {
   enabledLinks: string[];
   city?: string;
+  displayName?: string;
   hasSetPreferences: boolean;
 }
 
 interface UpdatePreferencesData {
   enabledLinks: string[];
   city?: string;
+  displayName?: string;
 }
 
 interface CreateEmailData {

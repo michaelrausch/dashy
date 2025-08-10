@@ -33,7 +33,8 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
   
   const [localPreferences, setLocalPreferences] = useState({
     enabledLinks: [] as string[],
-    city: '' as string
+    city: '' as string,
+    displayName: '' as string
   });
   const [availableLinksData, setAvailableLinksData] = useState<{
     availableLinks: LinkCard[];
@@ -45,7 +46,8 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
     if (isOpen) {
       setLocalPreferences({
         enabledLinks: [...(preferences.enabledLinks || [])],
-        city: preferences.city || ''
+        city: preferences.city || '',
+        displayName: preferences.displayName || ''
       });
       setAvailableLinksData(getAllAvailableLinks());
     }
@@ -153,6 +155,23 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
           Choose which icons appear on your dashboard. Changes will be saved to your account.
         </p>
 
+        {/* Display Name Setting */}
+        <div className="mb-8">
+          <h3 className="text-lg font-serif font-light text-white mb-4">
+            Display Name
+          </h3>
+          <input
+            type="text"
+            value={localPreferences.displayName}
+            onChange={(e) => setLocalPreferences(prev => ({ ...prev, displayName: e.target.value }))}
+            placeholder={session?.user?.name || "Enter your display name"}
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+          />
+          <p className="text-sm text-gray-400 mt-2">
+            This name will appear in your greetings. Leave empty to use your account name ({session?.user?.name || "Not available"}).
+          </p>
+        </div>
+
         {/* City Setting */}
         <div className="mb-8">
           <h3 className="text-lg font-serif font-light text-white mb-4">
@@ -162,7 +181,7 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
             <select
               value={localPreferences.city || ''}
               onChange={(e) => setLocalPreferences(prev => ({ ...prev, city: e.target.value }))}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer appearance-none"
             >
               <option value="" className="bg-gray-900 text-white">
                 Select a city
@@ -216,15 +235,13 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
               />
             ))}
           </div>
-          <div className="mt-4 text-sm text-gray-400">
-            <strong>Note:</strong> Email link is always available for admin users and doesn't need to be selected here.
-          </div>
+
         </div>
 
         {/* Custom Links Section */}
         {session && (
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-serif font-light text-white">
                 Custom Links
               </h3>
@@ -233,30 +250,40 @@ export const PreferencesModal = ({ isOpen, onClose, onPreferencesSaved }: Prefer
                   setEditingCustomLink(null);
                   setShowCustomLinkModal(true);
                 }}
-                className="px-3 py-1 text-sm bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-lg transition-all"
+                className="px-4 py-2 text-sm bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg flex items-center gap-2"
               >
-                + Add Custom Link
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Custom Link
               </button>
             </div>
             
             {customLinks.length === 0 ? (
-              <div className="text-center py-8 text-white/60">
-                <p className="mb-2">No custom links yet</p>
-                <p className="text-sm">Add your own custom links to quickly access your favorite sites!</p>
+              <div className="text-center py-8 px-6 rounded-xl bg-white/5 border border-white/10">
+                <div className="mb-4">
+                  <svg className="w-12 h-12 text-white/40 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                </div>
+                <p className="text-white/70 font-medium mb-2">No custom links yet</p>
+                <p className="text-white/50 text-sm">Create personalized shortcuts to your favorite websites and services</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {customLinks.map((link) => (
-                  <CustomLinkItem
-                    key={link.id}
-                    link={link}
-                    onEdit={() => {
-                      setEditingCustomLink(link);
-                      setShowCustomLinkModal(true);
-                    }}
-                    onDelete={() => handleDeleteCustomLink(link.id)}
-                  />
-                ))}
+              <div className="max-h-64 overflow-y-auto pr-2 -mr-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {customLinks.map((link) => (
+                    <CustomLinkItem
+                      key={link.id}
+                      link={link}
+                      onEdit={() => {
+                        setEditingCustomLink(link);
+                        setShowCustomLinkModal(true);
+                      }}
+                      onDelete={() => handleDeleteCustomLink(link.id)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -328,29 +355,45 @@ interface CustomLinkItemProps {
 
 const CustomLinkItem = ({ link, onEdit, onDelete }: CustomLinkItemProps) => {
   return (
-    <div className={`p-3 ${link.gradient} rounded-xl border border-white/10 flex items-center justify-between group`}>
-      <div className="flex items-center gap-3">
-        <span className="text-lg">{link.icon}</span>
-        <div>
-          <div className="text-white font-sans font-light text-sm">{link.title}</div>
-          <div className="text-white/60 text-xs truncate max-w-32">{link.url}</div>
+    <div className="relative bg-white/5 hover:bg-white/8 border border-white/10 hover:border-white/20 rounded-lg transition-all duration-200 group overflow-hidden">
+      {/* Gradient overlay for brand color */}
+      <div className={`absolute inset-0 ${link.gradient} opacity-20`}></div>
+      
+      {/* Content */}
+      <div className="relative p-3">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-black/20 backdrop-blur-sm flex items-center justify-center">
+            <span className="text-sm">{link.icon}</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-white font-sans font-medium text-sm mb-1 truncate" title={link.title}>
+              {link.title}
+            </div>
+            <div className="text-white/60 text-xs truncate" title={link.url}>
+              {link.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+            </div>
+          </div>
+          <div className="flex gap-1">
+            <button
+              onClick={onEdit}
+              className="p-1 rounded bg-black/20 hover:bg-black/30 text-white/70 hover:text-white transition-all text-xs"
+              title="Edit"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <button
+              onClick={onDelete}
+              className="p-1 rounded bg-black/20 hover:bg-red-500/30 text-white/70 hover:text-red-400 transition-all text-xs"
+              title="Delete"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button
-          onClick={onEdit}
-          className="p-1 text-white/60 hover:text-white text-xs"
-          title="Edit"
-        >
-          ✏️
-        </button>
-        <button
-          onClick={onDelete}
-          className="p-1 text-white/60 hover:text-red-400 text-xs"
-          title="Delete"
-        >
-          🗑️
-        </button>
       </div>
     </div>
   );

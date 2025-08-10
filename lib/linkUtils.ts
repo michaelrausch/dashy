@@ -46,10 +46,8 @@ const trainingActivitiesNames: Record<TrainingActivity, { title: string, icon: s
   }
 };
 
-// Check if user is admin (should match backend logic)
+// Check if user is admin (should match backend logic) - this is a soft check, also happens on the backend
 const isAdminUser = (userEmail?: string | null): boolean => {
-  // This should match the ADMIN_EMAIL from environment
-  // For frontend, we'll use the public version
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
   return !!adminEmail && userEmail === adminEmail;
 };

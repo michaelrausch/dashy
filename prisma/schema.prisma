@@ -40,6 +40,9 @@ model UserPreferences {
   
   // User's city for weather display
   city String?
+  
+  // Custom display name that overrides auth name
+  displayName String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

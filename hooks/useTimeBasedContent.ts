@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Session } from 'next-auth';
 import { TimeBasedContent } from '@/types';
 
-export const useTimeBasedContent = (session: Session | null, status: string, timeOverride?: number | null) => {
+export const useTimeBasedContent = (session: Session | null, status: string, timeOverride?: number | null, preferences?: { displayName?: string }) => {
   const [greeting, setGreeting] = useState("");
   const [timeGradient, setTimeGradient] = useState("");
 
@@ -19,8 +19,11 @@ export const useTimeBasedContent = (session: Session | null, status: string, tim
         const firstName = fullName.split(' ')[0];
         return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
       };
-      const userName = session?.user?.name 
-        ? `, ${getFirstName(session.user.name)}` 
+      
+      // Use custom display name if available, otherwise fall back to auth name
+      const displayName = preferences?.displayName?.trim() || session?.user?.name;
+      const userName = displayName 
+        ? `, ${getFirstName(displayName)}` 
         : "";
       
       if (hour >= 5 && hour < 12) {
@@ -58,7 +61,7 @@ export const useTimeBasedContent = (session: Session | null, status: string, tim
     const interval = setInterval(updateTimeBasedContent, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, [status, session, timeOverride]);
+  }, [status, session, timeOverride, preferences]);
 
   // Get the gradient class based on time with subtle effects
   const getGradientClass = () => {

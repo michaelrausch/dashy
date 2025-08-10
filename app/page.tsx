@@ -34,14 +34,14 @@ export default function Home() {
   const [showWeather, setShowWeather] = useState(false);
   const [weatherData, setWeatherData] = useState<{ weather: any; city: string } | null>(null);
   
-  // Custom hooks
-  const { greeting, getGradientClass } = useTimeBasedContent(session, status, timeOverride);
-  
   const { 
     data: preferences = { enabledLinks: [], hasSetPreferences: false }, 
     isLoading: preferencesLoading,
     refetch: refetchPreferences 
   } = useGetPreferencesQuery(undefined, { skip: status !== 'authenticated' });
+  
+  // Custom hooks
+  const { greeting, getGradientClass } = useTimeBasedContent(session, status, timeOverride, preferences);
   
   const { 
     data: customLinks = [], 
