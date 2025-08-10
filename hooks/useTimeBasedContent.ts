@@ -5,9 +5,14 @@ import { TimeBasedContent } from '@/types';
 export const useTimeBasedContent = (session: Session | null, status: string, timeOverride?: number | null, preferences?: { displayName?: string }) => {
   const [greeting, setGreeting] = useState("");
   const [timeGradient, setTimeGradient] = useState("");
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (status === "loading") return;
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (status === "loading" || !isClient) return;
 
     const updateTimeBasedContent = () => {
       const now = new Date();
@@ -61,10 +66,14 @@ export const useTimeBasedContent = (session: Session | null, status: string, tim
     const interval = setInterval(updateTimeBasedContent, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, [status, session, timeOverride, preferences]);
+  }, [status, session, timeOverride, preferences, isClient]);
 
   // Get the gradient class based on time with subtle effects
   const getGradientClass = () => {
+    if (!isClient) {
+      return "night-gradient"; // Default gradient for SSR
+    }
+    
     const hour = timeOverride !== null && timeOverride !== undefined ? timeOverride : new Date().getHours();
     if (hour >= 5 && hour < 8) {
       // Sunrise: 5-8 AM

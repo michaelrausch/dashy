@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface TimeDebuggerProps {
   onTimeOverride: (hour: number | null) => void;
@@ -18,7 +18,11 @@ const timeSlots = [
 
 export const TimeDebugger = ({ onTimeOverride, currentHour }: TimeDebuggerProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const actualHour = new Date().getHours();
+  const [actualHour, setActualHour] = useState(0);
+
+  useEffect(() => {
+    setActualHour(new Date().getHours());
+  }, []);
   
   const getCurrentSlotName = () => {
     const hour = currentHour ?? actualHour;
